@@ -10,14 +10,15 @@ Thumbs.db
 .Spotlight-V100
 .Trashes
 
-testing_creds.md
-tests/config.js
+example_jd.js
 
 # Application specific files
 node_modules
 npm-debug.log
+.sass-cache
 
 /logs
 jsconfig.json
 .vscode
 coverage
+.nyc_output
