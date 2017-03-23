@@ -56,7 +56,7 @@
     "url": "https://github.com/botmasterai/botmaster-socket.io/issues"
   },
   "dependencies": {
-    "botmaster": "^3.0.4",
+    "botmaster": "^3.0.5",
     "debug": "^2.6.3",
     "lodash": "^4.17.4",
     "socket.io": "^1.7.3"

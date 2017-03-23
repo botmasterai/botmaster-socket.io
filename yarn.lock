@@ -684,9 +684,9 @@ botmaster-test-fixtures@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/botmaster-test-fixtures/-/botmaster-test-fixtures-2.1.0.tgz#f368006a6ad3bb9bda02477486f0840d5ceb6518"
 
-botmaster@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/botmaster/-/botmaster-3.0.4.tgz#16f8a795ddb23343ecff6db60a445fec2f4e3377"
+botmaster@3:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/botmaster/-/botmaster-3.0.5.tgz#dc2bb855c2d0b7fc3ac6dd3e256e0e1186e45384"
   dependencies:
     debug "^2.6.1"
     lodash "^4.17.4"
