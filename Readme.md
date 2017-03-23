@@ -11,7 +11,7 @@ on any arbitrary web or mobile app that supports using socket.io as a client.
 If you want to build your own bot on your own website, this is what you'll want
 to use.
 
-This package works with botmaster 3.0.4;
+This package works with botmaster ^3.0.4;
 ---
 
 Botmaster is a lightweight chatbot framework. Its purpose is to integrate your existing chatbot into a variety of messaging channels - currently Facebook Messenger, Twitter DM and Telegram.
