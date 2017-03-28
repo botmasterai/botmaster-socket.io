@@ -10,6 +10,7 @@ test.beforeEach((t) => {
   return new Promise((resolve) => {
     t.context.server = http.createServer();
     t.context.server.listen(3000, '0.0.0.0', () => {
+
       t.context.bot = new SocketioBot({
         id: 'botId',
         server: t.context.server,
@@ -20,6 +21,8 @@ test.beforeEach((t) => {
         server: t.context.server,
       });
 
+      t.context.botmaster.addBot(t.context.bot);
+
       resolve();
     });
   });
@@ -27,7 +30,7 @@ test.beforeEach((t) => {
 
 test.afterEach((t) => {
   return new Promise((resolve) => {
-    t.context.server.close(resolve);
+    t.context.botmaster.server.close(resolve);
   });
 });
 
@@ -42,7 +45,7 @@ test('receiving an update should emit an error event to the bot object when' +
       socket.send('Hello World!');
     });
 
-    t.context.bot.on('error', (err) => {
+    t.context.botmaster.on('error', (bot, err) => {
       t.is(err.message,
            'Expected JSON object but got \'string\' Hello World! instead',
            'Error message is not same as expected');
@@ -56,6 +59,7 @@ test('a client should be able to send a message', (t) => {
   t.plan(2);
 
   const socket = io('ws://localhost:3000');
+  const botmaster = t.context.botmaster;
 
   return new Promise((resolve) => {
     socket.on('connect', () => {
@@ -66,18 +70,21 @@ test('a client should be able to send a message', (t) => {
       });
     });
 
-    t.context.bot.on('update', (update) => {
-      t.is(update.recipient.id, 'botId');
-      t.context.bot.reply(update, update.message.text)
+    botmaster.use({
+      type: 'incoming',
+      controller: (bot, update) => {
+        t.is(update.recipient.id, 'botId');
+        return bot.reply(update, update.message.text)
 
-      .catch((err) => {
-        t.fail(err.message);
-        socket.disconnect();
-        resolve();
-      });
+        .catch((err) => {
+          t.fail(err.message);
+          socket.disconnect();
+          resolve();
+        });
+      },
     });
 
-    t.context.bot.on('error', (err) => {
+    botmaster.on('error', (bot, err) => {
       t.fail(err.message);
       socket.disconnect();
       resolve();
@@ -102,9 +109,12 @@ test('a client should be able to set a botmasterUserId and find it' +
       socket.send({ message: {} });
     });
 
-    t.context.bot.on('update', (update) => {
-      t.is(update.sender.id, 'something');
-      t.context.bot.reply(update, 'Bye');
+    t.context.botmaster.use({
+      type: 'incoming',
+      controller: (bot, update) => {
+        t.is(update.sender.id, 'something');
+        t.context.bot.reply(update, 'Bye');
+      },
     });
 
     socket.on('message', (message) => {
@@ -125,11 +135,10 @@ test('two clients with the same botmasterUserId should receive the same ' +
   let gotMessageCount = 0;
 
   return new Promise((resolve) => {
-    t.context.bot.use({
-      incoming: {
-        cb: (bot, update) => {
-          bot.reply(update, update.message.text);
-        },
+    t.context.botmaster.use({
+      type: 'incoming',
+      controller: (bot, update) => {
+        bot.reply(update, update.message.text);
       },
     });
 
@@ -219,8 +228,11 @@ test('Only the remaining connected client of the two clients with the  ' +
       socketTwo.send({ message: {} });
     });
 
-    t.context.botmaster.on('update', (bot, update) => {
-      bot.reply(update, 'Sup');
+    t.context.botmaster.use({
+      type: 'incoming',
+      controller: (bot, update) => {
+        bot.reply(update, 'Sup');
+      },
     });
 
     socketTwo.on('message', (msg) => {
@@ -229,7 +241,7 @@ test('Only the remaining connected client of the two clients with the  ' +
       setTimeout(() => {
         socketTwo.disconnect();
         resolve();
-      }, 150);
+      }, 70);
     });
 
     socketOne.on('message', () => {
@@ -256,8 +268,11 @@ test('developer can route message to other user if wanted without duplication', 
     socketOne.on('connect', trySendMessage);
     socketTwo.on('connect', trySendMessage);
 
-    t.context.bot.on('update', () => {
-      t.context.bot.sendTextMessageTo('Sup', 'userId2');
+    t.context.botmaster.use({
+      type: 'incoming',
+      controller: (bot) => {
+        return bot.sendTextMessageTo('Sup', 'userId2');
+      },
     });
 
     socketTwo.on('message', (msg) => {
@@ -267,7 +282,7 @@ test('developer can route message to other user if wanted without duplication', 
         socketOne.disconnect();
         socketTwo.disconnect();
         resolve();
-      }, 150);
+      }, 70);
     });
 
     socketOne.on('message', () => {
@@ -288,11 +303,14 @@ test('a client sending an attachment should work', (t) => {
       });
     });
 
-    t.context.bot.on('update', (update) => {
-      t.deepEqual(update.message.attachments[0],
-                  attachmentFixtures.audioAttachment());
-      socket.disconnect();
-      resolve();
+    t.context.botmaster.use({
+      type: 'incoming',
+      controller: (bot, update) => {
+        t.deepEqual(update.message.attachments[0],
+                    attachmentFixtures.audioAttachment());
+        socket.disconnect();
+        resolve();
+      },
     });
   });
 });

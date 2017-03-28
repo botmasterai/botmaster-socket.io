@@ -6,7 +6,7 @@
   "scripts": {
     "s": "DEBUG=botmaster:socket.io nodemon --legacy-watch ./example_jd.js",
     "start": "node ./example_jd.js",
-    "test": "export NODE_ENV=test; nyc --reporter=lcov --reporter=html ava",
+    "test": "export NODE_ENV=test; nyc --reporter=lcov --reporter=html ava; nyc report",
     "test-debug": "export NODE_ENV=test DEBUG=botmaster:*; nyc --reporter=lcov --reporter=html ava",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "postversion": "git push && git push --tags && rm -rf build/temp",
@@ -56,7 +56,7 @@
     "url": "https://github.com/botmasterai/botmaster-socket.io/issues"
   },
   "dependencies": {
-    "botmaster": "^3.0.5",
+    "botmaster": "^3.0.6",
     "debug": "^2.6.3",
     "lodash": "^4.17.4",
     "socket.io": "^1.7.3"
