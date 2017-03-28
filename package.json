@@ -1,6 +1,6 @@
 {
   "name": "botmaster-socket.io",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The socket.io Botmaster integration",
   "main": "./lib/index.js",
   "scripts": {
