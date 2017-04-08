@@ -45,8 +45,7 @@ const socketioSettings = {
 const socketioBot = new SocketioBot(socketioSettings);
 botmaster.addBot(socketioBot);
 
-// Routing for index.html
-app.use(express.static(__dirname + '/public')); //added
+
 
 botmaster.use({
   type: 'incoming',
@@ -118,6 +117,9 @@ We will need to add a couple of lines to this code because we will be serving a 
 const express = require('express'); //added
 const port = process.env.PORT || 3000; //added
 const app = express(); //added
+
+// Routing for index.html
+app.use(express.static(__dirname + '/public')); //added
 
 const server = app.listen(port, '0.0.0.0', () => {  //added
     console.log('Server listening at port %d', port);
