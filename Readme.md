@@ -63,11 +63,13 @@ const io = require('socket.io-client');
 const socket = io('ws://localhost:3000');
 
 socket.on('connect', function() {
-  const message = {
-    text: 'Hey there botmaster!'
+  const update = {
+    message: {
+      text: 'Hey there botmaster!'
+    }
   };
 
-  socket.send(message);
+  socket.send(update);
 });
 
 ```
