@@ -276,11 +276,13 @@ form.onsubmit = function(event) {
   messages.insertAdjacentHTML('beforeend',
     `<li class="user-message">${textInput.value}</li>`);
   // create a botmaster compatible message from the text input by the user
-  const message = {
-    text: textInput.value,
+  const update = {
+    message: {
+      text: textInput.value
+    }
   };
   // send the message over the webSocket
-  socket.send(message);
+  socket.send(update);
   // finally, clear the user textInput field
   textInput.value = '';
 };
