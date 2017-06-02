@@ -62,7 +62,7 @@
     "socket.io": "^1.7.3"
   },
   "engines": {
-    "node": ">=4.x.x <8.0.0"
+    "node": ">=4.x.x"
   },
   "devDependencies": {
     "ava": "^0.18.2",
