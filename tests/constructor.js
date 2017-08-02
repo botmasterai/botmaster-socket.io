@@ -132,14 +132,26 @@ test('passing no sends setting defaults to default sends settings', (t) => {
   });
 });
 
-test('calls to use the passed middleware for each supplied piece', t => {
-  const botmaster = new Botmaster()
+test('calls to use the passed middleware for one supplied piece', t => {
+  const botmaster = new Botmaster();
   const bot = new SocketioBot({ id: 'something', server: botmaster.server });
   const ioServer = {
     use: sinon.spy()
-  }
+  };
 
-  bot.__registerSocketMiddleware(ioServer, ['test'])
+  bot.__registerSocketMiddleware(ioServer, ['test']);
 
-  t.true(ioServer.use.calledOnce)
-})
+  t.true(ioServer.use.calledOnce);
+});
+
+test('calls to use the passed middleware for multiple supplied pieces', t => {
+  const botmaster = new Botmaster();
+  const bot = new SocketioBot({ id: 'something', server: botmaster.server });
+  const ioServer = {
+    use: sinon.spy()
+  };
+
+  bot.__registerSocketMiddleware(ioServer, ['test', 'test1', 'test2']);
+
+  t.deepEqual(ioServer.use.callCount, 3);
+});
