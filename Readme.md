@@ -40,6 +40,7 @@ const botmaster = new Botmaster();
 const socketioSettings = {
   id: 'SOME_BOT_ID_OF_YOUR_CHOOSING',
   server: botmaster.server, // this is required for socket.io. You can set it to another node server object if you wish to. But in this example, we will use the one created by botmaster under the hood
+  middleware: [] // custom middleware you want to attach to the socket server, such as express-socket.io-session
 };
 
 const socketioBot = new SocketioBot(socketioSettings);
