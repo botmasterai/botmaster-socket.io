@@ -1,6 +1,6 @@
 import test from 'ava';
+import sinon from 'sinon';
 import Botmaster from 'botmaster';
-
 import SocketioBot from '../lib';
 
 test('should throw an error when settings does not have an id', (t) => {
@@ -60,6 +60,7 @@ test('passing no receives setting defaults to default receives settings', (t) =>
     },
     echo: false,
     read: false,
+    delivery: true,
     postback: false,
     quickReply: false,
   };
@@ -130,3 +131,15 @@ test('passing no sends setting defaults to default sends settings', (t) => {
     });
   });
 });
+
+test('calls to use the passed middleware for each supplied piece', t => {
+  const botmaster = new Botmaster()
+  const bot = new SocketioBot({ id: 'something', server: botmaster.server });
+  const ioServer = {
+    use: sinon.spy()
+  }
+
+  bot.__registerSocketMiddleware(ioServer, ['test'])
+
+  t.true(ioServer.use.calledOnce)
+})
