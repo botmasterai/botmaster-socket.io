@@ -74,6 +74,53 @@ socket.on('connect', function() {
 
 ```
 
+## With multiplexed socket.io
+
+#### Server
+```js
+const Botmaster = require('botmaster');
+const SocketioBot = require('botmaster-socket.io');
+const botmaster = new Botmaster();
+const io = require('socket.io')(botmaster.server); // this is required for socket.io. You can set it to another node server object if you wish to. But in this example, we will use the one created by botmaster under the hood
+
+const socketioSettings = {
+  id: 'SOME_BOT_ID_OF_YOUR_CHOOSING',
+  socket_io: io.of('/news'), // a custom namespace 
+};
+
+const socketioBot = new SocketioBot(socketioSettings);
+botmaster.addBot(socketioBot);
+
+botmaster.use({
+  type: 'incoming',
+  name: 'my-middleware',
+  controller: (bot, update) => {
+    return bot.reply(update, 'Hello world!');
+  }
+});
+```
+
+#### Client
+```js
+const io = require('socket.io-client');
+
+const socket = io('ws://localhost:3000/news'); //namespace used in server
+
+socket.on('connect', function() {
+  const update = {
+    message: {
+      text: 'Hey there botmaster!'
+    }
+  };
+
+  socket.send(update);
+});
+
+```
+
+
+
+
 ## The Botmaster Socket.io bot
 
 Socket.io is a great library that allows developers to write apps using webSockets (with fallbacks to http long-polling and others when webSockets aren't available on the client). You can read more about it on their own website here: http://socket.io.
